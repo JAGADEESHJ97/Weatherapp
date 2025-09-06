@@ -10,7 +10,7 @@ Built with **HTML, CSS, JavaScript**, and powered by the **OpenWeatherMap API**.
 - **City Search**: Enter your city or village name to get weather updates.
 - **Live Weather Data**: Displays temperature, humidity, wind speed, rainfall, and cloud cover.
 - **Farming Alerts** 🚨: Smart alerts for rain, heat, cold, wind, humidity, and good farming conditions.
-- **5-Day Forecast** 📅: Shows daily weather trends with min/max temperature and rain chances.
+- **3-Day Forecast** 📅: Shows daily weather trends with min/max temperature and rain chances.
 - **Farming Tips** 🌟: Helpful tips for different weather scenarios (rainy, hot, windy, cold).
 - **Geolocation Support** 📍: Detects current location (if allowed) and fetches weather automatically.
 
@@ -74,4 +74,5 @@ This project is licensed under the MIT License.
 ---
 
 ✨ *Stay informed, farm smart!* ✨
+
 
