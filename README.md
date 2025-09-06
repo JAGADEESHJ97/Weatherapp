@@ -1,6 +1,6 @@
 # 🌾 Farmer Weather Alert System
 
-A simple web-based application that provides **real-time weather updates, 5-day forecasts, and smart farming alerts** to help farmers make better decisions.  
+A simple web-based application that provides **real-time weather updates, 3-day forecasts, and smart farming alerts** to help farmers make better decisions.  
 Built with **HTML, CSS, JavaScript**, and powered by the **OpenWeatherMap API**.
 
 ---
@@ -74,5 +74,6 @@ This project is licensed under the MIT License.
 ---
 
 ✨ *Stay informed, farm smart!* ✨
+
 
 
