@@ -67,13 +67,10 @@ Farmers are heavily affected by climate changes. This project helps them:
 
 ---
 
-## 📜 License
 
-This project is licensed under the MIT License.
-
----
 
 ✨ *Stay informed, farm smart!* ✨
+
 
 
 
