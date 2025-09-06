@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Weather Alert System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2E7D32, #4CAF50);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .search-section {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            font-size: 1.1em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+        }
+
+        .search-btn {
+            padding: 15px 30px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .search-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .weather-card {
+            background: white;
+            margin: 20px 30px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #4CAF50;
+        }
+
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .city-name {
+            font-size: 1.8em;
+            color: #2E7D32;
+            font-weight: bold;
+        }
+
+        .temp-display {
+            font-size: 2.5em;
+            color: #FF5722;
+            font-weight: bold;
+        }
+
+        .weather-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+
+        .alerts {
+            margin-top: 20px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 1.1em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-rain {
+            background: #E3F2FD;
+            color: #1976D2;
+            border-left: 4px solid #2196F3;
+        }
+
+        .alert-heat {
+            background: #FFF3E0;
+            color: #F57C00;
+            border-left: 4px solid #FF9800;
+        }
+
+        .alert-good {
+            background: #E8F5E8;
+            color: #2E7D32;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .alert-warning {
+            background: #FFEBEE;
+            color: #C62828;
+            border-left: 4px solid #F44336;
+        }
+
+        .forecast-section {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .forecast-title {
+            font-size: 1.5em;
+            color: #2E7D32;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .forecast-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px;
+            border-left: 4px solid #f44336;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tips-section {
+            background: #2E7D32;
+            color: white;
+            padding: 30px;
+        }
+
+        .tips-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .tip-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tip-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .weather-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .temp-display {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 Farmer Weather Alert System</h1>
+            <p>Stay informed, farm smart - Weather alerts for better farming decisions</p>
+        </div>
+
+        <div class="search-section">
+            <div class="search-container">
+                <input type="text" id="cityInput" class="search-input" placeholder="Enter your city or village name..." />
+                <button onclick="getWeather()" class="search-btn" id="searchBtn">🔍 Get Weather</button>
+            </div>
+        </div>
+
+        <div id="weatherResults"></div>
+
+        <div class="tips-section">
+            <h2 class="tips-title">🌟 Smart Farming Tips</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">🌧️</div>
+                    <h3>Rainy Days</h3>
+                    <p>Avoid sowing seeds, spraying pesticides, or harvesting during rain. Use this time for equipment maintenance.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">☀️</div>
+                    <h3>Hot Weather</h3>
+                    <p>Schedule irrigation early morning or evening. Provide shade for livestock and ensure adequate water supply.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🌬️</div>
+                    <h3>Windy Conditions</h3>
+                    <p>Avoid spraying pesticides or fertilizers. Secure lightweight structures and protect young plants.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">❄️</div>
+                    <h3>Cold Weather</h3>
+                    <p>Protect crops from frost damage. Cover sensitive plants and ensure livestock have warm shelter.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = "d1448050863d5bba7e55d44879cc3ab0";
+        const BASE_URL = "https://api.openweathermap.org/data/2.5";
+
+        // Handle Enter key press
+        document.getElementById('cityInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                getWeather();
+            }
+        });
+
+        async function getWeather() {
+            const city = document.getElementById('cityInput').value.trim();
+            const resultsDiv = document.getElementById('weatherResults');
+            const searchBtn = document.getElementById('searchBtn');
+
+            if (!city) {
+                showError('Please enter a city name');
+                return;
+            }
+
+            // Show loading state
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = '<span class="spinner"></span>Loading...';
+            resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Getting weather data...</div>';
+
+            try {
+                // Get current weather
+                const currentResponse = await fetch(`${BASE_URL}/weather?q=${city}&appid=${API_KEY}&units=metric`);
+                const currentData = await currentResponse.json();
+
+                if (currentData.cod !== 200) {
+                    throw new Error(currentData.message || 'City not found');
+                }
+
+                // Get forecast data
+                const forecastResponse = await fetch(`${BASE_URL}/forecast?q=${city}&appid=${API_KEY}&units=metric`);
+                const forecastData = await forecastResponse.json();
+
+                displayWeather(currentData, forecastData);
+
+            } catch (error) {
+                showError(`Error: ${error.message}. Please check the city name and try again.`);
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = '🔍 Get Weather';
+            }
+        }
+
+        function displayWeather(current, forecast) {
+            const resultsDiv = document.getElementById('weatherResults');
+            
+            const temp = Math.round(current.main.temp);
+            const feelsLike = Math.round(current.main.feels_like);
+            const humidity = current.main.humidity;
+            const windSpeed = Math.round(current.wind.speed * 3.6); // Convert m/s to km/h
+            const description = current.weather[0].description;
+            const cityName = current.name;
+            const rain = current.rain ? current.rain['1h'] || 0 : 0;
+            const clouds = current.clouds.all;
+
+            // Generate alerts based on weather conditions
+            const alerts = generateFarmingAlerts(temp, rain, windSpeed, humidity, description);
+
+            // Generate forecast for next few days
+            const forecastHtml = generateForecast(forecast);
+
+            const weatherHtml = `
+                <div class="weather-card">
+                    <div class="weather-header">
+                        <h2 class="city-name">📍 ${cityName}</h2>
+                        <div class="temp-display">${temp}°C</div>
+                    </div>
+                    
+                    <div class="weather-info">
+                        <div class="info-item">
+                            <div class="info-label">Weather</div>
+                            <div class="info-value">${capitalizeFirst(description)}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Feels Like</div>
+                            <div class="info-value">${feelsLike}°C</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Humidity</div>
+                            <div class="info-value">${humidity}%</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Wind Speed</div>
+                            <div class="info-value">${windSpeed} km/h</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Cloud Cover</div>
+                            <div class="info-value">${clouds}%</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Rain (1h)</div>
+                            <div class="info-value">${rain} mm</div>
+                        </div>
+                    </div>
+
+                    <div class="alerts">
+                        ${alerts.map(alert => `<div class="alert ${alert.class}">${alert.icon} ${alert.message}</div>`).join('')}
+                    </div>
+                </div>
+
+                ${forecastHtml}
+            `;
+
+            resultsDiv.innerHTML = weatherHtml;
+        }
+
+        function generateFarmingAlerts(temp, rain, windSpeed, humidity, description) {
+            const alerts = [];
+
+            // Rain alerts
+            if (rain > 0) {
+                if (rain > 5) {
+                    alerts.push({
+                        class: 'alert-warning',
+                        icon: '⚠️',
+                        message: `Heavy rain expected (${rain}mm) - Postpone all outdoor farming activities. Risk of soil erosion and crop damage.`
+                    });
+                } else {
+                    alerts.push({
+                        class: 'alert-rain',
+                        icon: '🌧️',
+                        message: `Light rain expected (${rain}mm) - Avoid sowing, spraying pesticides, and harvesting today.`
+                    });
+                }
+            }
+
+            // Temperature alerts
+            if (temp > 35) {
+                alerts.push({
+                    class: 'alert-heat',
+                    icon: '🔥',
+                    message: `Very hot weather (${temp}°C) - Increase irrigation, provide shade for livestock, avoid midday work.`
+                });
+            } else if (temp < 5) {
+                alerts.push({
+                    class: 'alert-warning',
+                    icon: '❄️',
+                    message: `Very cold weather (${temp}°C) - Protect crops from frost, ensure livestock warmth, cover sensitive plants.`
+                });
+            }
+
+            // Wind alerts
+            if (windSpeed > 25) {
+                alerts.push({
+                    class: 'alert-warning',
+                    icon: '🌬️',
+                    message: `Strong winds (${windSpeed} km/h) - Avoid spraying, secure equipment, protect young plants.`
+                });
+            }
+
+            // Humidity alerts
+            if (humidity > 85) {
+                alerts.push({
+                    class: 'alert-rain',
+                    icon: '💧',
+                    message: `High humidity (${humidity}%) - Monitor for fungal diseases, ensure good air circulation in crops.`
+                });
+            } else if (humidity < 30) {
+                alerts.push({
+                    class: 'alert-heat',
+                    icon: '🌵',
+                    message: `Low humidity (${humidity}%) - Increase watering frequency, mulch soil to retain moisture.`
+                });
+            }
+
+            // Good weather
+            if (rain === 0 && temp >= 15 && temp <= 30 && windSpeed <= 15) {
+                alerts.push({
+                    class: 'alert-good',
+                    icon: '✅',
+                    message: 'Perfect weather for farming activities! Good time for sowing, harvesting, and field work.'
+                });
+            }
+
+            return alerts;
+        }
+
+        function generateForecast(forecast) {
+            // Handle both real API data and demo data
+            let forecastList = forecast.list || [];
+            
+            // If no forecast data, create some sample data
+            if (forecastList.length === 0) {
+                const today = new Date();
+                for (let i = 1; i <= 5; i++) {
+                    const date = new Date(today.getTime() + (i * 24 * 60 * 60 * 1000));
+                    forecastList.push({
+                        dt: date.getTime() / 1000,
+                        main: { temp: 25 + Math.random() * 10 },
+                        weather: [{ description: 'partly cloudy', main: 'Clouds' }],
+                        rain: Math.random() > 0.7 ? { '3h': Math.random() * 5 } : null
+                    });
+                }
+            }
+            
+            const dailyForecasts = {};
+            
+            // Group forecasts by date
+            forecastList.slice(0, 15).forEach(item => {
+                const date = new Date(item.dt * 1000);
+                const dateKey = date.toDateString();
+                
+                if (!dailyForecasts[dateKey]) {
+                    dailyForecasts[dateKey] = {
+                        date: dateKey,
+                        temps: [],
+                        weather: item.weather[0].description,
+                        icon: item.weather[0].main,
+                        rain: item.rain ? item.rain['3h'] || 0 : 0
+                    };
+                }
+                
+                dailyForecasts[dateKey].temps.push(item.main.temp);
+                if (item.rain && item.rain['3h']) {
+                    dailyForecasts[dateKey].rain = Math.max(dailyForecasts[dateKey].rain, item.rain['3h']);
+                }
+            });
+
+            const forecastItems = Object.values(dailyForecasts).slice(0, 5).map(day => {
+                const minTemp = Math.round(Math.min(...day.temps));
+                const maxTemp = Math.round(Math.max(...day.temps));
+                const date = new Date(day.date);
+                const dayName = date.toLocaleDateString('en', { weekday: 'short', month: 'short', day: 'numeric' });
+                
+                return `
+                    <div class="forecast-item">
+                        <div style="font-weight: bold; margin-bottom: 10px;">${dayName}</div>
+                        <div style="font-size: 1.1em; margin: 5px 0;">${getWeatherIcon(day.icon)} ${capitalizeFirst(day.weather)}</div>
+                        <div style="font-size: 1.2em; font-weight: bold; color: #2E7D32;">${maxTemp}°/${minTemp}°</div>
+                        ${day.rain > 0 ? `<div style="color: #1976D2; margin-top: 5px;">🌧️ ${day.rain.toFixed(1)}mm</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="forecast-section">
+                    <h2 class="forecast-title">📅 3-Day Weather Forecast</h2>
+                    <div class="forecast-grid">
+                        ${forecastItems}
+                    </div>
+                </div>
+            `;
+        }
+
+        function getWeatherIcon(weather) {
+            const icons = {
+                'Clear': '☀️',
+                'Clouds': '☁️',
+                'Rain': '🌧️',
+                'Snow': '❄️',
+                'Thunderstorm': '⛈️',
+                'Drizzle': '🌦️',
+                'Mist': '🌫️',
+                'Fog': '🌫️'
+            };
+            return icons[weather] || '🌤️';
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function showError(message) {
+            const resultsDiv = document.getElementById('weatherResults');
+            resultsDiv.innerHTML = `<div class="error">❌ ${message}</div>`;
+        }
+
+        // Load weather for user's location on page load (if geolocation is available)
+        window.addEventListener('load', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Use coordinates to get city name and weather
+                    fetch(`${BASE_URL}/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${API_KEY}&units=metric`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.cod === 200) {
+                                document.getElementById('cityInput').value = data.name;
+                                document.getElementById('cityInput').placeholder = `Current location: ${data.name}`;
+                            }
+                        })
+                        .catch(error => console.log('Could not get location weather'));
+                }, function() {
+                    console.log('Geolocation not available');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
