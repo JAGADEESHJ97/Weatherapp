@@ -52,7 +52,7 @@ You can get a free API key by signing up on [OpenWeatherMap](https://home.openwe
 ## 📸 Screenshots
 
 - 🌤️ **Weather Dashboard**: Displays current conditions with alerts.  
-- 📅 **5-Day Forecast**: Helps plan farming activities in advance.  
+- 📅 **3-Day Forecast**: Helps plan farming activities in advance.  
 - 🌟 **Smart Farming Tips**: Shows advice tailored to weather.
 
 ---
@@ -74,3 +74,4 @@ This project is licensed under the MIT License.
 ---
 
 ✨ *Stay informed, farm smart!* ✨
+
